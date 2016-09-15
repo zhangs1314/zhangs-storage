@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>Content</title>
+<script type = "text/javascript" src = "base.js"></script>
+<script type = "text/javascript" src = "bean.js"></script>
+<script type = "text/javascript" src = "zhangsSelect.js"></script>
+<script language = "javascript">
+var continentZhangsSelect, nationZhangsSelect, clubZhangsSelect;
+function getContinent () {
+	return continents [selContinents.selectedIndex];
+}
+function getNation () {
+	return nations == null ? null : nations [selNations.selectedIndex];
+}
+function exhibitClubs () {
+	var nation = getNation (), i, club;
+	clubs = nation == null ? new Array () : nation.Clubs;
+	selClubs.options.length = 0;
+	for (i = 0; i < clubs.length; i ++) {
+		club = clubs [i];
+		selClubs.options.add (new Option (club.Name, club.Id));
+	}
+}
+function exhibitNations () {
+	var continent = getContinent (), i, nation;
+	nations = continent.Nations;
+	selNations.options.length = 0;
+	for (i = 0; i < nations.length; i ++) {
+		nation = nations [i];
+		selNations.options.add (new Option (nation.Name, nation.Id));
+	}
+	exhibitClubs ();
+}
+function loadFundamentalData () {
+	var northAmerica = new Continent ("North America"), europe = new Continent ("Europe"), america = new Nation ("America", northAmerica), canada = new Nation ("Canada", northAmerica), bostonCeltics = new Club ("Boston Celtics", america), brooklynNets = new Club ("Brooklyn Nets", america), newYorkKnicks = new Club ("New York Knicks", america), philadelphia76ers = new Club ("Philadelphia 76ers", america), torontoRaptors = new Club ("Toronto Raptors", canada), chicagoBulls = new Club ("Chicago Bulls", america), clevelandCavaliers = new Club ("Cleveland Cavaliers", america), detroitPistons = new Club ("Detroit Pistons", america), indianaPacers = new Club ("Indiana Pacers", america), milwaukeeBucks = new Club ("Milwaukee Bucks", america), atlantaHawks = new Club ("Atlanta Hawks", america), charlotteHornets = new Club ("Charlotte Hornets", america), miamiHeat = new Club ("Miami Heat", america), orlandoMagic = new Club ("Orlando Magic", america), washingtonWizards = new Club ("Washington Wizards", america), denverNuggets = new Club ("Denver Nuggets", america), minnesotaTimberwolves = new Club ("Minnesota Timberwolves", america), oklahomaCityThunder = new Club ("Oklahoma City Thunder", america), portlandTrailBlazers = new Club ("Portland Trail Blazers", america), utahJazz = new Club ("Utah Jazz", america), goldenStateWarriors = new Club ("Golden State Warriors", america), losAngelesClippers = new Club ("Los Angeles Clippers", america), losAngelesLakers = new Club ("Los Angeles Lakers", america), phoenixSuns = new Club ("Phoenix Suns", america), sacramentoKings = new Club ("Sacramento Kings", america), dallasMavericks = new Club ("Dallas Mavericks", america), houstonRockets = new Club ("Houston Rockets", america), memphisGrizzlies = new Club ("Memphis Grizzlies", america), newOrleansPelicans = new Club ("New Orleans Pelicans", america), sanAntonioSpurs = new Club ("San Antonio Spurs", america), i, continent;
+	for (i = 0; i < continents.length; i ++) {
+		continent = continents [i];
+		selContinents.options.add (new Option (continent.Name, continent.Id));
+	}
+	exhibitNations ();
+}
+function getZhangsSelect () {
+	var zhangsSelect = new ZhangsSelect ();
+	return zhangsSelect;
+}
+function findContinent () {
+	return continents [continentZhangsSelect.CurrentIndex];
+}
+function findNation () {
+	return nations [nationZhangsSelect.CurrentIndex];
+}
+function showClubs () {
+	var nation = findNation (), i, club;
+	clubs = nation == null ? new Array () : nation.Clubs;
+	clubZhangsSelect.clear ();
+	for (i = 0; i < clubs.length; i ++) {
+		club = clubs [i];
+		clubZhangsSelect.addOption (club.Id, club.Name);
+	}
+	club = clubs.length == 0 ? null : clubs [0];
+	if (club != null) {
+		clubZhangsSelect.setValue (club.Id);
+	}
+}
+function showNations () {
+	var continent = findContinent (), i, nation;
+	nations = continent.Nations;
+	nationZhangsSelect.clear ();
+	for (i = 0; i < nations.length; i ++) {
+		nation = nations [i];
+		nationZhangsSelect.addOption (nation.Id, nation.Name);
+	}
+	nation = nations.length == 0 ? null : nations [0];
+	if (nation != null) {
+		nationZhangsSelect.setValue (nation.Id);
+	}
+	showClubs ();
+}
+function reworkFundamentalData () {
+	var i, continent;
+	continentZhangsSelect = getZhangsSelect ();
+	nationZhangsSelect = getZhangsSelect ();
+	clubZhangsSelect = getZhangsSelect ();
+	continentZhangsSelect.occur = function () {
+		showNations ();
+	};
+	nationZhangsSelect.occur = function () {
+		showClubs ();
+	};
+	tdContinents.appendChild (continentZhangsSelect.getSelf ());
+	tdNations.appendChild (nationZhangsSelect.getSelf ());
+	tdClubs.appendChild (clubZhangsSelect.getSelf ());
+	for (i = 0; i < continents.length; i ++) {
+		continent = continents [i];
+		continentZhangsSelect.addOption (continent.Id, continent.Name);
+	}
+	continent = continents [0];
+	continentZhangsSelect.setValue (continent.Id);
+	showNations ();
+}
+function setHeight () {
+	if (parent.contentFrame == null) {
+		setTimeout (setHeight, 5);
+	} else {
+		document.body.style.height = parent.contentFrame.height;
+	}
+}
+function initialize () {
+	if (parent.document.title == "Basketball Empire") {
+		tblOutline.style.visibility = "visible";
+		loadFundamentalData ();
+		reworkFundamentalData ();
+		setHeight ();
+	}
+}
+</script>
+</head>
+<body bgcolor = "#ffffcc" style = "margin: 0;" onload = "initialize ()">
+<table id = "tblOutline" cellpadding = "0" cellspacing = "0" border = "1" align = "center" style = "visibility: hidden;">
+<tr>
+<th colspan = "3"><label>Outline</label></th>
+</tr>
+<tr align = "center">
+<td width = "30%"><label>Continents</label></td>
+<td width = "30%"><label>Nations</label></td>
+<td width = "40%"><label>Clubs</label></td>
+</tr>
+<tr align = "center">
+<td><select id = "selContinents" onchange = "exhibitNations ()"></select></td>
+<td><select id = "selNations" onchange = "exhibitClubs ()"></select></td>
+<td><select id = "selClubs"></select></td>
+</tr>
+<tr align = "center">
+<td id = "tdContinents"></td>
+<td id = "tdNations"></td>
+<td id = "tdClubs"></td>
+</tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<html>
+<head>
+<title>Basketball Empire</title>
+<script type = "text/javascript" src = "base.js"></script>
+<script language = "javascript">
+var contentFrame;
+function scaleOutline () {
+	var width = document.body.clientWidth, contentWidth = parseInt (divOutline.style.width, 10), contentHeight = parseInt (divOutline.style.height, 10), rate = width / contentWidth, scale = "scale(" + rate + ", " + rate + ")", left, top;
+	divOutline.style.transform = scale;
+	divOutline.style.webkitTransform = scale;
+	divOutline.style.mozTransform = scale;
+	divOutline.style.msTransform = scale;
+	divOutline.style.oTransform = scale;
+	left = rate > 1 ? contentWidth * (rate - 1) / 2 : (width - contentWidth) / 2;
+	top = contentHeight * (rate - 1) / 2;
+	divOutline.style.left = left;
+	divOutline.style.top = top;
+}
+function initialize () {
+	contentFrame = fetch ("contentFrame");
+	contentFrame.src = "content.html";
+	scaleOutline ();
+}
+document.onclick = function (event) {
+	try {
+		contentFrame.contentWindow.document.body.click (event);
+	} catch (ex) {}
+};
+</script>
+</head>
+<body style = "margin: 0;" onload = "initialize ()" onresize = "scaleOutline ()">
+<div id = "divOutline" style = "position: absolute; width: 1000px; height: 500px;"><iframe id = "contentFrame" allowTransparency = "true" width = "100%" height = "100%" frameborder = "0" scrolling = "no"></iframe></div>
+</body>
+</html>
